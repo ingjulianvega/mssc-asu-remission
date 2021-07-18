@@ -12,6 +12,7 @@ import ingjulianvega.ximic.msscasuremission.web.model.RemissionList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -40,7 +41,14 @@ public class RemissionServiceImpl implements RemissionService {
         log.debug("getById()...");
         return remissionMapper.remissionEntityToRemissionDto(
                 remissionRepository.findById(id)
-                        .orElseThrow(() -> new RemissionException(ErrorCodeMessages.REMISSION_NOT_FOUND, "")));
+                        .orElseThrow(() -> RemissionException
+                                .builder()
+                                .httpStatus(HttpStatus.BAD_REQUEST)
+                                .apiCode(ErrorCodeMessages.REMISSION_NOT_FOUND_API_CODE)
+                                .error(ErrorCodeMessages.REMISSION_NOT_FOUND_ERROR)
+                                .message(ErrorCodeMessages.REMISSION_NOT_FOUND_MESSAGE)
+                                .solution(ErrorCodeMessages.REMISSION_NOT_FOUND_SOLUTION)
+                                .build()));
     }
 
     @Override
@@ -70,7 +78,14 @@ public class RemissionServiceImpl implements RemissionService {
     public void updateById(UUID id, Remission remission) {
         log.debug("updateById...");
         RemissionEntity remissionEntity = remissionRepository.findById(id)
-                .orElseThrow(() -> new RemissionException(ErrorCodeMessages.REMISSION_NOT_FOUND, ""));
+                .orElseThrow(() -> RemissionException
+                        .builder()
+                        .httpStatus(HttpStatus.BAD_REQUEST)
+                        .apiCode(ErrorCodeMessages.REMISSION_NOT_FOUND_API_CODE)
+                        .error(ErrorCodeMessages.REMISSION_NOT_FOUND_ERROR)
+                        .message(ErrorCodeMessages.REMISSION_NOT_FOUND_MESSAGE)
+                        .solution(ErrorCodeMessages.REMISSION_NOT_FOUND_SOLUTION)
+                        .build());
 
         remissionEntity.setVisitId(remission.getVisitId());
         remissionEntity.setRemissionTypeId(remission.getRemissionTypeId());
